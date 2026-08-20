@@ -1,0 +1,82 @@
+[
+  {
+    "attendance_id": "ATT001",
+    "student_id": "STU001",
+    "date": "2026-08-18",
+    "subject": "Mathematics",
+    "status": "PRESENT",
+    "marked_by": "TCH001"
+  },
+  {
+    "attendance_id": "ATT002",
+    "student_id": "STU001",
+    "date": "2026-08-17",
+    "subject": "Physics",
+    "status": "PRESENT",
+    "marked_by": "TCH001"
+  },
+  {
+    "attendance_id": "ATT003",
+    "student_id": "STU001",
+    "date": "2026-08-16",
+    "subject": "Chemistry",
+    "status": "PRESENT",
+    "marked_by": "TCH002"
+  },
+  {
+    "attendance_id": "ATT004",
+    "student_id": "STU001",
+    "date": "2026-08-15",
+    "subject": "English",
+    "status": "ABSENT",
+    "marked_by": "TCH003"
+  },
+  {
+    "attendance_id": "ATT005",
+    "student_id": "STU002",
+    "date": "2026-08-18",
+    "subject": "Science",
+    "status": "PRESENT",
+    "marked_by": "TCH002"
+  },
+  {
+    "attendance_id": "ATT006",
+    "student_id": "STU002",
+    "date": "2026-08-17",
+    "subject": "English",
+    "status": "PRESENT",
+    "marked_by": "TCH003"
+  },
+  {
+    "attendance_id": "ATT007",
+    "student_id": "STU003",
+    "date": "2026-08-18",
+    "subject": "Mathematics",
+    "status": "PRESENT",
+    "marked_by": "TCH001"
+  },
+  {
+    "attendance_id": "ATT008",
+    "student_id": "STU003",
+    "date": "2026-08-17",
+    "subject": "Physics",
+    "status": "LEAVE",
+    "marked_by": "TCH001"
+  },
+  {
+    "attendance_id": "ATT009",
+    "student_id": "STU004",
+    "date": "2026-08-18",
+    "subject": "Mathematics",
+    "status": "PRESENT",
+    "marked_by": "TCH001"
+  },
+  {
+    "attendance_id": "ATT010",
+    "student_id": "STU005",
+    "date": "2026-08-18",
+    "subject": "Mathematics",
+    "status": "ABSENT",
+    "marked_by": "TCH001"
+  }
+]
