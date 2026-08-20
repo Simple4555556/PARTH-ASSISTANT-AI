@@ -183,7 +183,14 @@ export default function ParthAssistantUI({ activeRole, currentUser, token, selec
         body: JSON.stringify(body)
       });
 
-      if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+      if (response.status === 401) {
+        throw new Error("AUTH_EXPIRED");
+      } else if (response.status === 403) {
+        throw new Error("PERMISSION_DENIED");
+      } else if (!response.ok) {
+        throw new Error(`SERVER_ERROR_${response.status}`);
+      }
+
       const data = await response.json();
 
       if (data.tool_used) setToolActivity(`Executed Tool: ${data.tool_used}`);
@@ -227,11 +234,20 @@ export default function ParthAssistantUI({ activeRole, currentUser, token, selec
       }, 250);
 
     } catch (err) {
+      let errMessage = getUIString(selectedLanguage, 'errorText');
+      if (err.message === 'AUTH_EXPIRED') {
+        errMessage = 'Your session has expired. Please log in again.';
+      } else if (err.message === 'PERMISSION_DENIED') {
+        errMessage = "You don't have permission to access that information.";
+      } else if (err.name === 'TypeError' || (err.message && (err.message.includes('fetch') || err.message.includes('SERVER_ERROR')))) {
+        errMessage = 'School service is temporarily unavailable. Please verify the backend server API connection.';
+      }
+
       setMessages(prev => [
         ...prev,
         {
           sender: 'ai',
-          text: getUIString(selectedLanguage, 'errorText'),
+          text: errMessage,
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           persona: getPersonaTitle(activeRole),
           intent: 'ERROR',
