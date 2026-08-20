@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import ParthAssistantUI from './components/ParthAssistantUI';
 import LoginScreen from './components/LoginScreen';
+import { API_BASE_URL } from './config/api';
 
 const DEMO_USERS = {
   STUDENT: {
@@ -42,7 +43,7 @@ export default function App() {
     if (!isAuthenticated) return;
     const user = DEMO_USERS[activeRole] || currentUser;
 
-    fetch('http://localhost:8000/api/auth/login', {
+    fetch(`${API_BASE_URL}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: user.username, password: 'password123' })
@@ -65,7 +66,7 @@ export default function App() {
 
   const handleLogout = () => {
     if (token) {
-      fetch('http://localhost:8000/api/auth/logout', {
+      fetch(`${API_BASE_URL}/api/auth/logout`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`

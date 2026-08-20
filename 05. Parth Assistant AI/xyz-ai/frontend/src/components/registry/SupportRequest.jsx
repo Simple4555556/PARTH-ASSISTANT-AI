@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { PhoneCall, CheckCircle2, Loader2 } from 'lucide-react';
+import { API_BASE_URL } from '../../config/api';
 
 export default function SupportRequest({ data = {}, token, currentUser }) {
   const [reason, setReason] = useState('');
@@ -12,7 +13,7 @@ export default function SupportRequest({ data = {}, token, currentUser }) {
     setIsSubmitting(true);
 
     try {
-      const res = await fetch('http://localhost:8000/api/mock/support/call-request', {
+      const res = await fetch(`${API_BASE_URL}/api/mock/support/call-request`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

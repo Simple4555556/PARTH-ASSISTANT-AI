@@ -9,6 +9,7 @@ import ParentDashboard from './ParentDashboard';
 import TeacherDashboard from './TeacherDashboard';
 import PrincipalDashboard from './PrincipalDashboard';
 import { getUIString } from '../utils/localizedStrings';
+import { API_BASE_URL } from '../config/api';
 
 function getPersonaTitle(role) {
   switch (role) {
@@ -171,7 +172,7 @@ export default function ParthAssistantUI({ activeRole, currentUser, token, selec
     setToolActivity(getUIString(selectedLanguage, 'analyzing'));
 
     try {
-      const endpoint = isVoiceInput ? 'http://localhost:8000/api/ai/voice' : 'http://localhost:8000/api/ai/chat';
+      const endpoint = isVoiceInput ? `${API_BASE_URL}/api/ai/voice` : `${API_BASE_URL}/api/ai/chat`;
       const body = isVoiceInput
         ? { transcript: query, conversation_id: conversationId, language: selectedLanguage || 'en' }
         : { message: query, conversation_id: conversationId, language: selectedLanguage || 'en' };

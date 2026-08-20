@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Sparkles, Lock, Mail, GraduationCap, Users, BookOpen, Crown, ArrowRight } from 'lucide-react';
+import { API_BASE_URL } from '../config/api';
 
 const DEMO_ACCOUNTS = [
   { role: 'STUDENT', name: 'Aarav Sharma', username: 'student1', email: 'aarav@school.edu', icon: GraduationCap, color: '#3b82f6' },
@@ -31,7 +32,7 @@ export default function LoginScreen({ onLoginSuccess }) {
     const account = DEMO_ACCOUNTS.find(a => a.role === selectedRole) || DEMO_ACCOUNTS[0];
 
     try {
-      const res = await fetch('http://localhost:8000/api/auth/login', {
+      const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: account.username, password: password })

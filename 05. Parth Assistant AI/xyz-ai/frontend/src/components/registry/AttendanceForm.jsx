@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { UserCheck, CheckCircle, AlertTriangle, Loader2 } from 'lucide-react';
+import { API_BASE_URL } from '../../config/api';
 
 export default function AttendanceForm({ data = {}, token, onConfirmationSuccess }) {
   const studentName = data.student_name || 'Rahul';
@@ -18,7 +19,7 @@ export default function AttendanceForm({ data = {}, token, onConfirmationSuccess
 
     try {
       const todayStr = new Date().toISOString().split('T')[0];
-      const res = await fetch('http://localhost:8000/api/mock/attendance/mark', {
+      const res = await fetch(`${API_BASE_URL}/api/mock/attendance/mark`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
