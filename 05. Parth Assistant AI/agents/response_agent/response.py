@@ -48,6 +48,34 @@ class ResponseAgent:
             present_days = data.get("present_days", 35)
             absent_days = data.get("absent_days", 5)
             total_days = data.get("total_days", 40)
+            subject = tool_result.get("subject") or (tool_result.get("entities") or {}).get("subject")
+            subject_wise = data.get("subject_wise", {})
+
+            if subject and subject in subject_wise:
+                subject_pct = subject_wise[subject]
+                if role == "STUDENT":
+                    msg = f"Your attendance for {subject} is {subject_pct}%."
+                elif role == "PARENT":
+                    msg = f"{student_name}'s {subject} attendance is {subject_pct}%."
+                else:
+                    msg = f"{student_name}'s attendance for {subject} is {subject_pct}%."
+
+                return {
+                    "message": msg,
+                    "ui_action": "SHOW_COMPONENT",
+                    "component": "attendance-card",
+                    "data": {
+                        "student_id": data.get("student_id", "S101"),
+                        "student_name": student_name,
+                        "overall_percentage": pct,
+                        "subject": subject,
+                        "subject_percentage": subject_pct,
+                        "present_days": present_days,
+                        "absent_days": absent_days,
+                        "total_days": total_days,
+                        "subject_wise": subject_wise
+                    }
+                }
 
             if role == "STUDENT":
                 msg = f"Your current attendance is {pct}%."
@@ -66,7 +94,8 @@ class ResponseAgent:
                     "overall_percentage": pct,
                     "present_days": present_days,
                     "absent_days": absent_days,
-                    "total_days": total_days
+                    "total_days": total_days,
+                    "subject_wise": subject_wise
                 }
             }
 

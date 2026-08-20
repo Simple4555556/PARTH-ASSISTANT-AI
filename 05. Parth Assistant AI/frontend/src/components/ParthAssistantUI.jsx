@@ -180,7 +180,7 @@ export default function ParthAssistantUI({ activeRole, currentUser, token, selec
       console.log('[Parth AI] Sending to:', endpoint);
 
       const chatController = new AbortController();
-      const chatTimeout = setTimeout(() => chatController.abort(), 30000);
+      const chatTimeout = setTimeout(() => chatController.abort(), 15000);
 
       const response = await fetch(endpoint, {
         method: 'POST',
@@ -244,7 +244,7 @@ export default function ParthAssistantUI({ activeRole, currentUser, token, selec
       console.error('[Parth Assistant AI API Connection Error]', { endpoint, errorName: err.name, errorMessage: err.message });
       let errMessage = getUIString(selectedLanguage, 'errorText');
       if (err.name === 'AbortError') {
-        errMessage = 'The school service took too long to respond. Please try again.';
+        errMessage = 'Parth Assistant is taking longer than expected. Please try again.';
       } else if (err.message === 'AUTH_EXPIRED') {
         errMessage = 'Your session has expired. Please log in again.';
       } else if (err.message === 'PERMISSION_DENIED') {

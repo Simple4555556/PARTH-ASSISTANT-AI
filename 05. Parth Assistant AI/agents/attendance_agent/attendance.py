@@ -14,7 +14,11 @@ class AttendanceAgent:
 
         if intent == "VIEW_OWN_ATTENDANCE":
             student_id = user_id if role == "STUDENT" else (entities.get("student_id") or "S101")
-            return attendance_tools.get_own_attendance(student_id)
+            res = attendance_tools.get_own_attendance(student_id)
+            if res.get("success"):
+                res["subject"] = entities.get("subject")
+                res["entities"] = entities
+            return res
 
         if intent == "VIEW_CHILD_ATTENDANCE":
             # Determine child student ID
@@ -24,13 +28,17 @@ class AttendanceAgent:
                 if res.get("success") and res.get("student"):
                     child_id = res["student"]["student_id"]
                 else:
-                    child_ids = user.get("child_ids", ["S101"])
+                    child_ids = user.get("child_ids") or ["S101"]
                     child_id = child_ids[0] if child_ids else "S101"
             else:
-                child_ids = user.get("child_ids", ["S101"])
+                child_ids = user.get("child_ids") or ["S101"]
                 child_id = child_ids[0] if child_ids else "S101"
 
-            return attendance_tools.get_child_attendance(child_id)
+            res = attendance_tools.get_child_attendance(child_id)
+            if res.get("success"):
+                res["subject"] = entities.get("subject")
+                res["entities"] = entities
+            return res
 
         if intent == "VIEW_RECENT_ATTENDANCE":
             student_name = entities.get("student_name")
@@ -38,7 +46,8 @@ class AttendanceAgent:
                 res = student_tools.resolve_student_by_name(student_name)
                 child_id = res["student"]["student_id"] if (res.get("success") and res.get("student")) else "S101"
             else:
-                child_id = user.get("child_ids", [user_id])[0]
+                child_ids = user.get("child_ids") or []
+                child_id = child_ids[0] if child_ids else (user.get("user_id") or "S101")
 
             return attendance_tools.get_recent_attendance(child_id, limit=5)
 

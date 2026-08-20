@@ -2,6 +2,8 @@
 PARTH ASSISTANT AI — Chat API Router (POST /api/ai/chat - Phase 3 Multilingual & Rate Limited)
 """
 
+import time
+import uuid
 from typing import Dict, Any, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
@@ -26,7 +28,11 @@ def chat_endpoint(payload: ChatPayload, current_user: Dict[str, Any] = Depends(g
     Receives user message and optional language code.
     Derives authenticated identity directly from JWT token session.
     Enforces rate limiting and routes request through SupervisorAgent.
+    Tracks precise execution latency with unique request UUID.
     """
+    t_req_received = time.time()
+    req_id = f"REQ-{uuid.uuid4().hex[:8].upper()}"
+
     if not payload.message.strip():
         raise HTTPException(status_code=400, detail="Message cannot be empty.")
 
@@ -37,11 +43,14 @@ def chat_endpoint(payload: ChatPayload, current_user: Dict[str, Any] = Depends(g
         session_user=current_user,
         user_message=payload.message,
         conversation_id=payload.conversation_id,
-        language_preference=payload.language
+        language_preference=payload.language,
+        request_id=req_id,
+        t_req_received=t_req_received
     )
 
     return {
         "success": res.get("success", True),
+        "request_id": res.get("request_id", req_id),
         "conversation_id": res["conversation_id"],
         "message": res["response"],
         "response": res["response"],
@@ -56,7 +65,6 @@ def chat_endpoint(payload: ChatPayload, current_user: Dict[str, Any] = Depends(g
         "tool_used": res["tool_used"],
         "role": res["role"],
         "persona": res["persona"],
+        "timing_breakdown": res.get("timing_breakdown", {}),
         "processing_time_ms": res.get("processing_time_ms", 0.0)
     }
-
-

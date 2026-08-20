@@ -18,12 +18,14 @@ from backend.main import app
 client = TestClient(app)
 
 
+import uuid
+
 def test_student_registration_and_login():
-    username = "new_student_99"
+    username = f"new_student_{uuid.uuid4().hex[:6]}"
     reg_payload = {
         "username": username,
         "name": "New Student",
-        "email": "new.student@school.edu",
+        "email": f"{username}@school.edu",
         "password": "securepassword123",
         "confirm_password": "securepassword123",
         "grade_section": "10-A"
@@ -42,7 +44,7 @@ def test_student_registration_and_login():
 
 def test_student_registration_password_mismatch():
     res = client.post("/api/auth/register/student", json={
-        "username": "mismatch_student",
+        "username": f"mismatch_{uuid.uuid4().hex[:6]}",
         "name": "Mismatch",
         "email": "mismatch@school.edu",
         "password": "password123",
@@ -53,11 +55,11 @@ def test_student_registration_password_mismatch():
 
 
 def test_parent_registration_with_linked_child():
-    username = "new_parent_99"
+    username = f"new_parent_{uuid.uuid4().hex[:6]}"
     res = client.post("/api/auth/register/parent", json={
         "username": username,
         "name": "New Parent",
-        "email": "new.parent@gmail.com",
+        "email": f"{username}@gmail.com",
         "password": "securepassword123",
         "confirm_password": "securepassword123",
         "linked_student_id": "S101"
@@ -68,7 +70,7 @@ def test_parent_registration_with_linked_child():
 
 def test_parent_registration_invalid_child():
     res = client.post("/api/auth/register/parent", json={
-        "username": "bad_parent",
+        "username": f"bad_parent_{uuid.uuid4().hex[:6]}",
         "name": "Bad Parent",
         "email": "bad@gmail.com",
         "password": "password123",
@@ -80,11 +82,12 @@ def test_parent_registration_invalid_child():
 
 
 def test_teacher_registration_requires_verification_code():
+    username = f"new_teacher_{uuid.uuid4().hex[:6]}"
     # Valid code
     res = client.post("/api/auth/register/teacher", json={
-        "username": "new_teacher_99",
+        "username": username,
         "name": "New Teacher",
-        "email": "new.teacher@school.edu",
+        "email": f"{username}@school.edu",
         "password": "password123",
         "confirm_password": "password123",
         "subject": "Physics",

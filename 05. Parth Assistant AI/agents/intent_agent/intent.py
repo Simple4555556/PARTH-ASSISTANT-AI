@@ -82,9 +82,15 @@ class IntentAgent:
         if any(kw in msg for kw in ["overall", "school attendance", "analytics", "school analytics", "show analytics"]):
             return {"intent": "VIEW_SCHOOL_ANALYTICS", "confidence": 0.96, "source": "RULE"}
 
-        # English + Hinglish: own attendance
-        if any(kw in msg for kw in ["my attendance", "meri attendance", "what is my attendance", "show my attendance"]):
-            return {"intent": "VIEW_OWN_ATTENDANCE", "confidence": 0.97, "source": "RULE"}
+        # English + Hinglish: own attendance & subject attendance
+        if any(kw in msg for kw in [
+            "my attendance", "meri attendance", "what is my attendance", "show my attendance",
+            "check my attendance", "my attendance percentage", "attendance status", "attendance percentage",
+            "mathematics attendance", "math attendance", "science attendance", "english attendance"
+        ]) or ("attendance" in msg and any(w in msg for w in ["my", "meri", "mera", "check", "what is", "how much", "percentage", "status", "mathematics", "math", "science", "english", "hindi"])):
+            if user_role == "PARENT" and not any(w in msg for w in ["my own", "myself"]):
+                return {"intent": "VIEW_CHILD_ATTENDANCE", "confidence": 0.98, "source": "RULE"}
+            return {"intent": "VIEW_OWN_ATTENDANCE", "confidence": 0.98, "source": "RULE"}
 
 
         # ── Multilingual Native-Script Own Attendance Rules ──────────────────────────
