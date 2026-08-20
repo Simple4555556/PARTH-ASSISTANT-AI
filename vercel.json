@@ -1,0 +1,5 @@
+{
+  "buildCommand": "cd \"05. Parth Assistant AI/frontend\" && npm run build",
+  "outputDirectory": "05. Parth Assistant AI/frontend/dist",
+  "framework": "vite"
+}
