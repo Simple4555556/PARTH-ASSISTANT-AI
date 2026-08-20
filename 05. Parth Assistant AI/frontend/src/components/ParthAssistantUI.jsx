@@ -234,6 +234,7 @@ export default function ParthAssistantUI({ activeRole, currentUser, token, selec
       }, 250);
 
     } catch (err) {
+      console.error('[Parth Assistant AI API Connection Error]', { endpoint, errorName: err.name, errorMessage: err.message });
       let errMessage = getUIString(selectedLanguage, 'errorText');
       if (err.message === 'AUTH_EXPIRED') {
         errMessage = 'Your session has expired. Please log in again.';
