@@ -177,11 +177,18 @@ export default function ParthAssistantUI({ activeRole, currentUser, token, selec
         ? { transcript: query, conversation_id: conversationId, language: selectedLanguage || 'en' }
         : { message: query, conversation_id: conversationId, language: selectedLanguage || 'en' };
 
+      console.log('[Parth AI] Sending to:', endpoint);
+
+      const chatController = new AbortController();
+      const chatTimeout = setTimeout(() => chatController.abort(), 30000);
+
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
+        signal: chatController.signal
       });
+      clearTimeout(chatTimeout);
 
       if (response.status === 401) {
         throw new Error("AUTH_EXPIRED");
@@ -236,12 +243,14 @@ export default function ParthAssistantUI({ activeRole, currentUser, token, selec
     } catch (err) {
       console.error('[Parth Assistant AI API Connection Error]', { endpoint, errorName: err.name, errorMessage: err.message });
       let errMessage = getUIString(selectedLanguage, 'errorText');
-      if (err.message === 'AUTH_EXPIRED') {
+      if (err.name === 'AbortError') {
+        errMessage = 'The school service took too long to respond. Please try again.';
+      } else if (err.message === 'AUTH_EXPIRED') {
         errMessage = 'Your session has expired. Please log in again.';
       } else if (err.message === 'PERMISSION_DENIED') {
         errMessage = "You don't have permission to access that information.";
       } else if (err.name === 'TypeError' || (err.message && (err.message.includes('fetch') || err.message.includes('SERVER_ERROR')))) {
-        errMessage = 'School service is temporarily unavailable. Please verify the backend server API connection.';
+        errMessage = 'School service is temporarily unavailable. Please start the backend server and try again.';
       }
 
       setMessages(prev => [

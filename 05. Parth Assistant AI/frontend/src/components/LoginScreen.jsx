@@ -32,11 +32,15 @@ export default function LoginScreen({ onLoginSuccess }) {
     const account = DEMO_ACCOUNTS.find(a => a.role === selectedRole) || DEMO_ACCOUNTS[0];
 
     try {
+      const controller = new AbortController();
+      const loginTimeout = setTimeout(() => controller.abort(), 15000);
       const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: account.username, password: password })
+        body: JSON.stringify({ username: account.username, password: password }),
+        signal: controller.signal
       });
+      clearTimeout(loginTimeout);
 
       if (!res.ok) throw new Error('Invalid credentials');
       const data = await res.json();
@@ -55,18 +59,12 @@ export default function LoginScreen({ onLoginSuccess }) {
         }
       });
     } catch (err) {
-      // Demo fallback login mode if backend server is starting up
-      onLoginSuccess({
-        token: 'demo-token-session-123',
-        role: account.role,
-        currentUser: {
-          user_id: account.role === 'STUDENT' ? 'S101' : account.role === 'PARENT' ? 'P201' : account.role === 'TEACHER' ? 'T301' : 'M401',
-          username: account.username,
-          name: account.name,
-          role: account.role,
-          email: account.email
-        }
-      });
+      console.error('[Parth Login Error]', err.message);
+      if (err.message && err.message.includes('Invalid credentials')) {
+        setErrorMsg('Incorrect username or password. Please try again.');
+      } else {
+        setErrorMsg('School service is temporarily unavailable. Please start the backend server and try again.');
+      }
     } finally {
       setIsSubmitting(false);
     }
